@@ -1,5 +1,3 @@
-package com.company;
-
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
@@ -16,6 +14,8 @@ public class HildiStart {
         Зарефакторить код         done
      **/
 
+    private static Path dir;
+
     public static void main(String[] args) {
 
         if(!ArrayUtils.isNotEmpty(args) && args.length == 0) {
@@ -26,21 +26,16 @@ public class HildiStart {
     }
 
     private static void getFileList(){
-        Path dir = Paths.get("./").normalize();
-
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, "*")) {
-            for (Path file : stream) {
-                System.out.print(file + " ");
-            }
-        } catch(IOException e1) {
-            System.out.println("Carl, we have a problem!");
-        }
-        System.out.println();
+        dir = Paths.get("./").normalize();
+        printAllFilesAtDir(dir);
     }
 
     private static void getFileList(String[] args){
-        Path dir = Paths.get("./" + args).normalize();
+        dir = Paths.get("./" + args).normalize();
+        printAllFilesAtDir(dir);
+    }
 
+    private static void printAllFilesAtDir(Path dir) {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, "*")) {
             for (Path file : stream) {
                 System.out.print(file + " ");
