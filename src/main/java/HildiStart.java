@@ -1,19 +1,10 @@
-import com.sun.xml.internal.xsom.impl.scd.Step;
-
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 public class HildiStart {
-
-    /** TODO Task1                done
-        Запилить помник           done
-        Почистить репозиторий     done
-        Зарефакторить код         done
-     **/
 
     private static Path dir;
 
@@ -27,7 +18,7 @@ public class HildiStart {
     }
 
     private static void getFileList(){
-        dir = Paths.get("./").normalize();
+        dir = Paths.get("./").getFileName().normalize();
         printAllFilesAtDir(dir);
     }
 
@@ -39,11 +30,10 @@ public class HildiStart {
     private static void printAllFilesAtDir(Path dir) {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, "*")) {
             for (Path file : stream) {
-                System.out.println(file + " ");
+                System.out.println(file);
             }
         } catch(IOException e1) {
             System.out.println("Carl, we have a problem!");
         }
-        System.out.println();
     }
 }
