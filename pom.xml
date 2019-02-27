@@ -5,8 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ua.hildi.hildican</groupId>
-    <artifactId>HildiCan</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>ls</artifactId>
+    <version>1</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -15,7 +25,11 @@
                 <version>3.1.1</version>
                 <configuration>
                     <archive>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <index>true</index>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>ua.hildi.ls.HildiStart</mainClass>
+                        </manifest>
                     </archive>
                 </configuration>
             </plugin>
