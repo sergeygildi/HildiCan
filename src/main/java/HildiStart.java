@@ -1,39 +1,50 @@
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class HildiStart {
 
-    private static Path dir;
+    /**
+     * Зарефакторить код                                                                done
+     * скрыть из дериктории все системные файлы. Показать только при флаге "-а"         done
+     * Обработать корректно эксепшн                                                     done/delete
+     * Абсолюнтые/относительные пути   dir.file.listfiles                               done
+     * Манифест (мавен)                                                                 done
+     * Сделать корректный вывод как в "ls"
+     */
 
     public static void main(String[] args) {
 
-        if(args.length == 0) {
-            getFileList();
+        Path target, targetPath;
+
+        if (args.length != 0) {
+            targetPath = Paths.get(args[0]);
+            if (targetPath.isAbsolute()) {
+                target = targetPath;
+            } else {
+                target = getCurrentDirectory().resolve(targetPath);
+            }
         } else {
-            getFileList(args);
+            target = getCurrentDirectory();
         }
+
+        printAllFilesAtDir(target);
     }
 
-    private static void getFileList(){
-        dir = Paths.get("./").getFileName().normalize();
-        printAllFilesAtDir(dir);
-    }
-
-    private static void getFileList(String[] path){
-        dir = Paths.get("./" + path[0]).getFileName().normalize();
-        printAllFilesAtDir(dir);
+    private static Path getCurrentDirectory() {
+        return Paths.get(System.getProperty("user.dir"));
     }
 
     private static void printAllFilesAtDir(Path dir) {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, "*")) {
-            for (Path file : stream) {
-                System.out.println(file);
+
+        File[] stream = dir.toFile().listFiles();
+
+        if (stream != null) {
+            for (File file : stream) {
+                if (!file.isHidden()) {
+                    System.out.print(file.getName() + " ");
+                }
             }
-        } catch(IOException e1) {
-            System.out.println("Carl, we have a problem!");
         }
     }
 }
