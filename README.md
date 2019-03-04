@@ -6,16 +6,16 @@
   Download the project and build it:
 
  
-> `mvn clear package`
+> `mvn clean package`
 
  
  Start app: 
  
- > `java -jar target//HildiCan-1.0-SNAPSHOT.jar`
+ > `java -jar target/HildiCan-1.0-SNAPSHOT.jar`
   
 
  
-  If you want to start to see what is in another directory, just specify the path to the desired directory.
+  If you want to see what is in another directory, just specify the path to the desired directory.
  
  > `java -jar target/HildiCan-1.0-SNAPSHOT.jar /target`
   
