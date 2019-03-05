@@ -13,23 +13,23 @@
  
  Start app: 
  
- > `java -jar target/ls.jar`
+ > `java -jar target/ls-1.jar`
   
 
  
   If you want to see what is in another directory, just specify the path to the desired directory as an argument.
  
- > `java -jar target/ls.jar /target`
+ > `java -jar target/ls-1.jar /target`
   
   or
  
- > `java -jar target/ls.jar /src/main/java/`
+ > `java -jar target/ls-1.jar /src/main/java/`
  
 or another if you want.
  
 If you want to see hidden directories and files, add the  `"-a"` flag.
   
- > `java -jar target/ls.jar -a /src/main/java/`
+ > `java -jar target/ls-1.jar -a /src/main/java/`
 
 So far this is all that the program does. 
  
