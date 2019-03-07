@@ -4,39 +4,43 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class HildiStart {
+class HildiStart {
 
     public static void main(String[] args) {
 
-        Path targetPath;
+        boolean showHiddenDir = shouldShowHiddenDir(args);
+        String target = getBackArgsListWhenItDoesNotHaveAFlag(args);
+        Path targetPath = getCorrectPath(target);
 
-        if (args.length > 0) {
-
-            if (args[0].equals("-a")) {
-
-                // When argument with a flag.
-                if (args.length == 2) {
-                    targetPath = Paths.get(args[1]);
-                    Path path = checkDirectory(targetPath);
-                    printAllFilesAtDir(path, true);
-                } else {
-                    // When we don't have second arg. Only flag.
-                    printAllFilesAtDir(getCurrentDirectory(), true);
-                }
-
-            } else {
-                // When argument without flag.
-                targetPath = Paths.get(args[0]);
-                Path path = checkDirectory(targetPath);
-                printAllFilesAtDir(path, false);
-            }
-            // Without arguments.
-        } else {
-            printAllFilesAtDir(getCurrentDirectory(), false);
-        }
+        printAllFilesAtDir(targetPath, showHiddenDir, target);
     }
 
-    private static Path checkDirectory(Path targetPath) {
+    private static Path getCorrectPath(String target) {
+        if (target == null) {
+            return getCurrentDirectory();
+        } return getResolvedDirectoryPathOrCurrentDirectory(Paths.get(target));
+    }
+
+    private static String getBackArgsListWhenItDoesNotHaveAFlag(String[] args) {
+        for (String argumentList: args) {
+            if (!argumentList.equals("-a")) {
+                return argumentList;
+            }
+        }
+        // TODO fix this bag
+        return "";
+    }
+
+    private static boolean shouldShowHiddenDir(String[] args) {
+        for (String argumentList : args) {
+            if (argumentList.equals("-a")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static Path getResolvedDirectoryPathOrCurrentDirectory(Path targetPath) {
             return getCurrentDirectory().resolve(targetPath);
     }
 
@@ -44,9 +48,18 @@ public class HildiStart {
         return Paths.get(System.getProperty("user.dir"));
     }
 
-    private static void printAllFilesAtDir(Path dir, boolean showHiddenDir) {
+    private static void printAllFilesAtDir(Path path, boolean showHiddenDir, String target) {
 
-        File[] fileArray = dir.toFile().listFiles();
+        if (target == null){
+            return;
+        }
+
+        File[] fileArray = path.toFile().listFiles();
+        boolean isThatAFile = new File(target).isFile();
+
+        if (isThatAFile) {
+            System.out.print(path.getFileName());
+        }
 
         if (fileArray == null) {
             return;
