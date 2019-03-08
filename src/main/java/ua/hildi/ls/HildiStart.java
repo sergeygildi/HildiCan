@@ -9,10 +9,10 @@ class HildiStart {
     public static void main(String[] args) {
 
         boolean showHiddenDir = shouldShowHiddenDir(args);
-        String target = getBackArgsListWhenItDoesNotHaveAFlag(args);
+        String target = getArgsWhenDoesNotAFlagAtList(args);
         Path targetPath = getCorrectPath(target);
 
-        printAllFilesAtDir(targetPath, showHiddenDir, target);
+        printAllFilesAtDir(targetPath, showHiddenDir);
     }
 
     private static Path getCorrectPath(String target) {
@@ -21,17 +21,19 @@ class HildiStart {
         } return getResolvedDirectoryPathOrCurrentDirectory(Paths.get(target));
     }
 
-    private static String getBackArgsListWhenItDoesNotHaveAFlag(String[] args) {
+    static String getArgsWhenDoesNotAFlagAtList(String[] args) {
         for (String argumentList: args) {
             if (!argumentList.equals("-a")) {
                 return argumentList;
             }
         }
-        // TODO fix this bag
-        return "";
+        return null;
     }
 
-    private static boolean shouldShowHiddenDir(String[] args) {
+    static boolean shouldShowHiddenDir(String[] args) {
+        if (args == null) {
+            return false;
+        }
         for (String argumentList : args) {
             if (argumentList.equals("-a")) {
                 return true;
@@ -48,24 +50,22 @@ class HildiStart {
         return Paths.get(System.getProperty("user.dir"));
     }
 
-    private static void printAllFilesAtDir(Path path, boolean showHiddenDir, String target) {
+    private static void printAllFilesAtDir(Path path, boolean showHiddenDir) {
 
-        if (target == null){
+        File targetFile = path.toFile();
+
+        File[] filesToPrint;
+        if (!targetFile.isFile()) {
+            filesToPrint = targetFile.listFiles();
+        } else {
+            filesToPrint = new File[]{targetFile};
+        }
+
+        if (filesToPrint == null) {
             return;
         }
 
-        File[] fileArray = path.toFile().listFiles();
-        boolean isThatAFile = new File(target).isFile();
-
-        if (isThatAFile) {
-            System.out.print(path.getFileName());
-        }
-
-        if (fileArray == null) {
-            return;
-        }
-
-        for (File file : fileArray) {
+        for (File file : filesToPrint) {
             if (showHiddenDir || !file.isHidden()) {
                 System.out.print(file.getName() + " ");
             }
