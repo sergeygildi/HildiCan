@@ -5,40 +5,14 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Created by Serhii Hildi on 05.03.19.
  */
 public class HildiStartTest {
-
-    /*
-        Проверки. Если:
-            - нет аргументов
-            - есть флаг
-            - есть другой флаг
-            - есть флаг, но нет аргументов
-            - если есть аргумент, но нет флага
-            - передан абосютный путь к файлу
-            - передан абосютный путь к папке
-            - передан путь к файлу
-            - передан путь к папке
-            - пробуем спуститься на директорию ниже
-            - передан null
-            - передано отрицательное значение
-     */
-
-//    @Test
-//    public void name() {
-        // given
-        // setup test data
-
-        // when
-        // invoke service(method) under test
-
-
-        // then
-        // assert that result is expected
-        // Assert.assertEquals("result must be equal to true", true, result);
-//    }
 
     @Test
     public void shouldShowHiddenDirMustReturnTrueIfSpecificArgumentIsPresent() {
@@ -48,6 +22,26 @@ public class HildiStartTest {
         boolean result = HildiStart.shouldShowHiddenDir(args);
 
         Assert.assertTrue("result must be equal to true", result);
+    }
+
+    @Test
+    public void shouldReturnFalseIfArgsIsNull() {
+
+        String[] args = null;
+
+        boolean result = HildiStart.shouldShowHiddenDir(args);
+
+        Assert.assertFalse("result must be equal to false", result);
+    }
+
+    @Test
+    public void shouldReturnFalseIfArgsIsNotASpecificArgument() {
+
+        String[] args = {"2", "weq", "-b"};
+
+        boolean result = HildiStart.shouldShowHiddenDir(args);
+
+        Assert.assertFalse("result must be equal to false", result);
     }
 
     @Test
@@ -61,6 +55,43 @@ public class HildiStartTest {
     }
 
     @Test
+    public void testPassIfArgsIsRelativePath() {
+
+        String[] args = {"target"};
+        Path path = HildiStart.getCurrentDirectory().resolve(Paths.get(args[0]));
+        Path result = HildiStart.getResolvedDirectoryPathOrCurrentDirectory(path);
+
+        Path expected = Paths.get(System.getProperty("user.dir") + File.separator + args[0]);
+
+        Assert.assertEquals(expected, result);
+    }
+
+    @Test
+    public void testPassIfArgsIsAbsolutePath() {
+
+        String[] args = {"/target"};
+        Path path = HildiStart.getCurrentDirectory().resolve(Paths.get(args[0]));
+        Path result = HildiStart.getResolvedDirectoryPathOrCurrentDirectory(path);
+
+        Path expected = Paths.get(args[0]);
+
+        Assert.assertEquals(expected, result);
+    }
+
+    @Test
+    public void shouldReturnResolvedDirectoryPathIfArgumentNotNull() {
+
+        String[] args = {"/target"};
+
+        String target = HildiStart.getArgsWhenDoesNotAFlagAtList(args);
+        Path correctPath = HildiStart.getCorrectPath(target);
+        Path result = HildiStart.getCurrentDirectory().resolve(correctPath);
+
+        Path expected = Paths.get(args[0]);
+        Assert.assertEquals(expected, result);
+    }
+
+    @Test
     public void shouldReturnNullIfArgumentsIsMissing() {
 
         String[] args = {};
@@ -68,6 +99,16 @@ public class HildiStartTest {
         String result = HildiStart.getArgsWhenDoesNotAFlagAtList(args);
 
         Assert.assertNull("result must be equal to null", result);
+    }
+
+    @Test
+    public void shouldReturnCurrentPathIfTargetArgsIsNull() {
+
+        Path result = HildiStart.getCorrectPath(null);
+
+        Path expectedPath = Paths.get(System.getProperty("user.dir"));
+
+        Assert.assertEquals(expectedPath, result);
     }
 
     @Test

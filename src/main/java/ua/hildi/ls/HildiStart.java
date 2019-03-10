@@ -15,7 +15,7 @@ class HildiStart {
         printAllFilesAtDir(targetPath, showHiddenDir);
     }
 
-    private static Path getCorrectPath(String target) {
+    static Path getCorrectPath(String target) {
         if (target == null) {
             return getCurrentDirectory();
         } return getResolvedDirectoryPathOrCurrentDirectory(Paths.get(target));
@@ -42,15 +42,15 @@ class HildiStart {
         return false;
     }
 
-    private static Path getResolvedDirectoryPathOrCurrentDirectory(Path targetPath) {
-            return getCurrentDirectory().resolve(targetPath);
+    static Path getResolvedDirectoryPathOrCurrentDirectory(Path targetPath) {
+        return getCurrentDirectory().resolve(targetPath);
     }
 
-    private static Path getCurrentDirectory() {
+    static Path getCurrentDirectory() {
         return Paths.get(System.getProperty("user.dir"));
     }
 
-    private static void printAllFilesAtDir(Path path, boolean showHiddenDir) {
+     private static void printAllFilesAtDir(Path path, boolean showHiddenDir) {
 
         File targetFile = path.toFile();
 
