@@ -7,21 +7,54 @@ import java.nio.file.Paths;
 class HildiStart {
 
     public static void main(String[] args) {
-
-        boolean showHiddenDir = shouldShowHiddenDir(args);
-        String target = getArgsWhenDoesNotAFlagAtList(args);
-        Path targetPath = getCorrectPath(target);
-
-        printAllFilesAtDir(targetPath, showHiddenDir);
+        ls(args);
     }
 
-    static Path getCorrectPath(String target) {
-        if (target == null) {
-            return getCurrentDirectory();
-        } return getResolvedDirectoryPathOrCurrentDirectory(Paths.get(target));
+    private static void ls(String[] args) {
+        boolean showHiddenFilesAndDirs = shouldShowHiddenFilesAndDirs(args);
+        String target = getFirstArraysArgumentOrNull(args);
+        Path targetPath = getResolvedPathIfArgumentNotNull(target);
+        File[] fileToPrint = getFileToPrint(targetPath);
+        print(fileToPrint, showHiddenFilesAndDirs);
     }
 
-    static String getArgsWhenDoesNotAFlagAtList(String[] args) {
+    static String print(File[] file, boolean showHiddenFilesAndDirs) {
+        if (file == null) {
+            return null;
+        }
+
+        StringBuilder argument = new StringBuilder();
+        for (File files : file) {
+            if (showHiddenFilesAndDirs || !files.isHidden()) {
+                argument.append(files.getName()).append(" ");
+            }
+        }
+        System.out.println(argument);
+
+        return argument.toString();
+    }
+
+    static File[] getFileToPrint(Path path) {
+        File targetFile = path.toFile();
+
+        File[] filesToPrint;
+        if (!targetFile.isFile()) {
+            filesToPrint = targetFile.listFiles();
+        } else {
+            filesToPrint = new File[]{targetFile};
+        }
+
+        return filesToPrint;
+    }
+
+    static Path getResolvedPathIfArgumentNotNull(String target) {
+        if (target != null) {
+            return getPath(Paths.get(target));
+        }
+        return getCurrentDirectory();
+    }
+
+    static String getFirstArraysArgumentOrNull(String[] args) {
         for (String argumentList: args) {
             if (!argumentList.equals("-a")) {
                 return argumentList;
@@ -30,7 +63,7 @@ class HildiStart {
         return null;
     }
 
-    static boolean shouldShowHiddenDir(String[] args) {
+    static boolean shouldShowHiddenFilesAndDirs(String[] args) {
         if (args == null) {
             return false;
         }
@@ -42,33 +75,11 @@ class HildiStart {
         return false;
     }
 
-    static Path getResolvedDirectoryPathOrCurrentDirectory(Path targetPath) {
+    static Path getPath(Path targetPath) {
         return getCurrentDirectory().resolve(targetPath);
     }
 
     static Path getCurrentDirectory() {
         return Paths.get(System.getProperty("user.dir"));
-    }
-
-     private static void printAllFilesAtDir(Path path, boolean showHiddenDir) {
-
-        File targetFile = path.toFile();
-
-        File[] filesToPrint;
-        if (!targetFile.isFile()) {
-            filesToPrint = targetFile.listFiles();
-        } else {
-            filesToPrint = new File[]{targetFile};
-        }
-
-        if (filesToPrint == null) {
-            return;
-        }
-
-        for (File file : filesToPrint) {
-            if (showHiddenDir || !file.isHidden()) {
-                System.out.print(file.getName() + " ");
-            }
-        }
     }
 }
